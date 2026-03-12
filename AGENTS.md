@@ -1,4 +1,4 @@
-# Prompt Enhancer Service — Development Guide
+# PromptPulse — Development Guide
 
 ## Prerequisites
 
@@ -14,26 +14,26 @@
 ## Quick Start
 
 ```bash
-cd prompt-enhancer-service
+cd prompt-pulse
 
 # Install dependencies
 uv sync
 
 # Initialize config directory
-uv run prompt-enhancer init
+uv run prompt-pulse init
 
 # Install the shell hook (for terminal state capture)
-uv run prompt-enhancer install-hook
-# Then restart your shell or: source ~/.prompt-enhancer/hook.zsh
+uv run prompt-pulse install-hook
+# Then restart your shell or: source ~/.prompt-pulse/hook.zsh
 
 # Run a single enhancement (text mode, no voice/terminal needed)
-uv run prompt-enhancer enhance "fix the build error"
+uv run prompt-pulse enhance "fix the build error"
 
 # Run with voice input
-uv run prompt-enhancer enhance --voice
+uv run prompt-pulse enhance --voice
 
 # Start the daemon with global hotkeys
-uv run prompt-enhancer start
+uv run prompt-pulse start
 ```
 
 ## Terminal Backends
@@ -44,7 +44,7 @@ The service auto-detects the best backend for your environment:
 |---------|:---:|:---:|:---:|:---:|-------|
 | **tmux** | Yes | Yes | Yes | Via hook | Be inside tmux |
 | **iterm2** | Yes | Yes | Yes | Yes | `uv sync --extra iterm2` + enable API |
-| **shell_hook** | No | Yes | Yes | Yes | `prompt-enhancer install-hook` |
+| **shell_hook** | No | Yes | Yes | Yes | `prompt-pulse install-hook` |
 | **generic** | No | Yes | Partial (history) | No | None |
 
 Auto-detection priority: `tmux` > `iterm2` > `shell_hook` > `generic`
@@ -57,11 +57,11 @@ The shell hook is a lightweight precmd/preexec addition to your shell that write
 
 ```bash
 # Auto-detect and install
-prompt-enhancer install-hook
+prompt-pulse install-hook
 
 # Or specify shell explicitly
-prompt-enhancer install-hook --shell bash
-prompt-enhancer install-hook --shell fish
+prompt-pulse install-hook --shell bash
+prompt-pulse install-hook --shell fish
 ```
 
 ## Build & Test
@@ -83,7 +83,7 @@ uv run ruff format src/ tests/
 ## Project Structure
 
 ```
-src/prompt_enhancer/
+src/prompt_pulse/
 ├── main.py              # CLI entry point (typer) + hotkey daemon + pipeline
 ├── config.py            # Pydantic config models + YAML loader
 ├── terminal/
@@ -109,7 +109,7 @@ src/prompt_enhancer/
 
 ## Configuration
 
-Config file: `~/.prompt-enhancer/config.yaml`
+Config file: `~/.prompt-pulse/config.yaml`
 
 See `config.example.yaml` for all available options.
 
@@ -165,18 +165,18 @@ terminal:
 
 | Command | Description |
 |---------|-------------|
-| `prompt-enhancer start` | Start daemon with hotkeys |
-| `prompt-enhancer enhance "text"` | Enhance text directly |
-| `prompt-enhancer enhance --voice` | Voice input mode |
-| `prompt-enhancer enhance --clipboard` | Enhance clipboard contents |
-| `prompt-enhancer context` | Show current terminal context |
-| `prompt-enhancer context --backend tmux` | Use specific backend |
-| `prompt-enhancer install-hook` | Install shell hook |
-| `prompt-enhancer init` | Create config directory |
+| `prompt-pulse start` | Start daemon with hotkeys |
+| `prompt-pulse enhance "text"` | Enhance text directly |
+| `prompt-pulse enhance --voice` | Voice input mode |
+| `prompt-pulse enhance --clipboard` | Enhance clipboard contents |
+| `prompt-pulse context` | Show current terminal context |
+| `prompt-pulse context --backend tmux` | Use specific backend |
+| `prompt-pulse install-hook` | Install shell hook |
+| `prompt-pulse init` | Create config directory |
 
 ## Troubleshooting
 
-- **"No terminal context"**: Install the shell hook (`prompt-enhancer install-hook`) or use tmux
+- **"No terminal context"**: Install the shell hook (`prompt-pulse install-hook`) or use tmux
 - **"Cannot connect to iTerm2"**: Enable Python API in iTerm2 Settings > General > Magic
 - **"No speech detected"**: Check microphone permissions in System Settings
 - **"LLM unavailable"**: For Ollama, ensure it's running (`ollama serve`). For cloud, check API keys

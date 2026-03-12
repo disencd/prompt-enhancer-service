@@ -1,7 +1,7 @@
-# prompt-enhancer-service
+# prompt-pulse
 
-[![CI](https://github.com/disencd/prompt-enhancer-service/actions/workflows/ci.yml/badge.svg)](https://github.com/disencd/prompt-enhancer-service/actions/workflows/ci.yml)
-[![Security](https://github.com/disencd/prompt-enhancer-service/actions/workflows/security.yml/badge.svg)](https://github.com/disencd/prompt-enhancer-service/actions/workflows/security.yml)
+[![CI](https://github.com/disencd/prompt-pulse/actions/workflows/ci.yml/badge.svg)](https://github.com/disencd/prompt-pulse/actions/workflows/ci.yml)
+[![Security](https://github.com/disencd/prompt-pulse/actions/workflows/security.yml/badge.svg)](https://github.com/disencd/prompt-pulse/actions/workflows/security.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -48,7 +48,7 @@ Four pluggable backends auto-detected at startup (tmux > iTerm2 > shell hook > g
 |---------|:---:|:---:|:---:|:---:|-------|
 | **tmux** | Yes | Yes | Yes | Via hook | Be inside tmux |
 | **iterm2** | Yes | Yes | Yes | Yes | `pip install .[iterm2]` |
-| **shell_hook** | No | Yes | Yes | Yes | `prompt-enhancer install-hook` |
+| **shell_hook** | No | Yes | Yes | Yes | `prompt-pulse install-hook` |
 | **generic** | No | Yes | History | No | None (always available) |
 
 - Polls every 2 s in idle mode; captures immediately on hotkey trigger
@@ -86,7 +86,7 @@ info (type, code, file, line, message) for 12+ pattern families:
 
 - **Clipboard** — `pbcopy` (macOS), `xclip` / `xsel` / `wl-copy` (Linux)
 - **Terminal paste** — iTerm2 `send_text()`, tmux `send-keys`
-- **File pipe** — writes to `~/.prompt-enhancer/last-prompt.txt`
+- **File pipe** — writes to `~/.prompt-pulse/last-prompt.txt`
 - **Notification** — `osascript` (macOS), `notify-send` (Linux)
 
 ### Global Hotkeys
@@ -101,11 +101,11 @@ info (type, code, file, line, message) for 12+ pattern families:
 ### CLI
 
 ```
-prompt-enhancer start          # Start the daemon with global hotkeys
-prompt-enhancer enhance "..."  # One-shot: enhance a text prompt
-prompt-enhancer context        # Show current terminal context
-prompt-enhancer install-hook   # Install shell hook (zsh/bash/fish)
-prompt-enhancer init           # Generate default config
+prompt-pulse start          # Start the daemon with global hotkeys
+prompt-pulse enhance "..."  # One-shot: enhance a text prompt
+prompt-pulse context        # Show current terminal context
+prompt-pulse install-hook   # Install shell hook (zsh/bash/fish)
+prompt-pulse init           # Generate default config
 ```
 
 ### Security
@@ -119,24 +119,24 @@ prompt-enhancer init           # Generate default config
 ## Quick Start
 
 ```bash
-pip install prompt-enhancer-service
+pip install prompt-pulse
 
-# Generate default config at ~/.prompt-enhancer/config.yaml
-prompt-enhancer init
+# Generate default config at ~/.prompt-pulse/config.yaml
+prompt-pulse init
 
 # Install shell hook for terminal state capture (zsh/bash/fish)
-prompt-enhancer install-hook
+prompt-pulse install-hook
 
 # One-shot: enhance a prompt with current terminal context
-prompt-enhancer enhance "fix the build error"
+prompt-pulse enhance "fix the build error"
 
 # Or start the daemon with global hotkeys
-prompt-enhancer start
+prompt-pulse start
 ```
 
 ### Configuration
 
-All settings live in `~/.prompt-enhancer/config.yaml`:
+All settings live in `~/.prompt-pulse/config.yaml`:
 
 ```yaml
 terminal:
@@ -167,8 +167,8 @@ delivery:
 ## Development
 
 ```bash
-git clone https://github.com/disencd/prompt-enhancer-service.git
-cd prompt-enhancer-service
+git clone https://github.com/disencd/prompt-pulse.git
+cd prompt-pulse
 uv sync --extra dev
 uv run ruff check src/ tests/
 uv run pytest tests/ -v

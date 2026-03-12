@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from prompt_enhancer.config import AppConfig, load_config
+from prompt_pulse.config import AppConfig, load_config
 
 
 def test_default_config():
@@ -77,6 +77,6 @@ def test_resolve_api_key_literal():
 
 
 def test_load_nonexistent_config():
-    config = load_config(Path("/tmp/does_not_exist_prompt_enhancer.yaml"))
+    config = load_config(Path("/tmp/does_not_exist_prompt_pulse.yaml"))
     # Should fall back to defaults
     assert config.terminal.backend == "auto"

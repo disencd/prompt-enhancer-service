@@ -1,6 +1,6 @@
-# Prompt Enhancer Service — Technical Specification
+# PromptPulse — Technical Specification
 
-> **Project**: prompt-enhancer-service
+> **Project**: prompt-pulse
 > **Version**: 0.1.0 (MVP)
 > **Date**: 2026-03-11
 
@@ -77,20 +77,20 @@ When users interact with AI coding assistants (Devin, Copilot, ChatGPT, etc.) fr
 | # | Backend | Platform | How It Works | Capabilities |
 |---|---------|----------|-------------|--------------|
 | 1 | **tmux** | macOS, Linux | `tmux capture-pane` for screen buffer; `tmux display-message` for CWD, PID, process info | Screen buffer, CWD, running process, command history |
-| 2 | **iterm2** | macOS only | iTerm2 Python API (`iterm2` pip package). Optional dependency: `pip install prompt-enhancer-service[iterm2]` | Screen buffer, CWD, last command, exit code, job name |
-| 3 | **shell_hook** | macOS, Linux | Lightweight precmd/preexec hook installed in the user's shell (zsh/bash/fish). Writes CWD, last command, and exit code to a state file (`~/.prompt-enhancer/shell_state.json`) | CWD, last command, exit code (no screen buffer) |
+| 2 | **iterm2** | macOS only | iTerm2 Python API (`iterm2` pip package). Optional dependency: `pip install prompt-pulse[iterm2]` | Screen buffer, CWD, last command, exit code, job name |
+| 3 | **shell_hook** | macOS, Linux | Lightweight precmd/preexec hook installed in the user's shell (zsh/bash/fish). Writes CWD, last command, and exit code to a state file (`~/.prompt-pulse/shell_state.json`) | CWD, last command, exit code (no screen buffer) |
 | 4 | **generic** | macOS, Linux | Reads shell history files (`~/.zsh_history`, `~/.bash_history`, `~/.local/share/fish/fish_history`). Detects CWD via `/proc/PID/cwd` (Linux) or `lsof -p PID` (macOS) | CWD, command history (no screen buffer) |
 
 **Shell Hook Details** (backend `shell_hook`):
 - **zsh**: `precmd` / `preexec` functions appended to `~/.zshrc`
 - **bash**: `PROMPT_COMMAND` / `DEBUG` trap appended to `~/.bashrc`
 - **fish**: `fish_postexec` function added to `~/.config/fish/conf.d/`
-- Installed via `prompt-enhancer install-hook`
+- Installed via `prompt-pulse install-hook`
 
 **Requirements by Backend**:
 - **tmux**: User must be inside a tmux session.
-- **iterm2**: iTerm2 with Shell Integration installed and Python API enabled. Optional dependency (`pip install prompt-enhancer-service[iterm2]`).
-- **shell_hook**: Hook installed via `prompt-enhancer install-hook`.
+- **iterm2**: iTerm2 with Shell Integration installed and Python API enabled. Optional dependency (`pip install prompt-pulse[iterm2]`).
+- **shell_hook**: Hook installed via `prompt-pulse install-hook`.
 - **generic**: No special setup. Always available as fallback.
 
 **Polling Strategy**:
@@ -174,7 +174,7 @@ Each pattern extracts: `error_type`, `code`, `file`, `line`, `message`.
 
 ---
 
-### 5.4 Prompt Enhancer (`prompt-enhancer`)
+### 5.4 PromptPulse (`prompt-pulse`)
 
 **Purpose**: Take the raw voice transcript + context and produce an optimized prompt.
 
@@ -228,7 +228,7 @@ OUTPUT: Write the enhanced prompt only. No explanation.
 | **Clipboard** | Any tool | `pbcopy` (macOS), `xclip`/`xsel`/`wl-copy` (Linux), `pyperclip` (fallback) |
 | **Paste into terminal** | Active terminal session | iTerm2 `session.async_send_text()` (macOS/iTerm2); `tmux send-keys` (tmux) |
 | **API call** | Devin, ChatGPT API | HTTP POST |
-| **File pipe** | Any tool reading a file | Write to `~/.prompt-enhancer/last-prompt.txt` |
+| **File pipe** | Any tool reading a file | Write to `~/.prompt-pulse/last-prompt.txt` |
 | **Notification** | User feedback | `osascript` (macOS), `notify-send` (Linux), console (fallback) |
 
 **Default flow**: Copy to clipboard + show notification with preview.
@@ -250,16 +250,16 @@ OUTPUT: Write the enhanced prompt only. No explanation.
 
 | Command | Description |
 |---------|-------------|
-| `prompt-enhancer start` | Start the service daemon |
-| `prompt-enhancer install-hook` | Install shell hook for current shell (zsh/bash/fish) |
-| `prompt-enhancer context` | Capture and display terminal context |
-| `prompt-enhancer context --backend tmux` | Capture context using a specific backend |
+| `prompt-pulse start` | Start the service daemon |
+| `prompt-pulse install-hook` | Install shell hook for current shell (zsh/bash/fish) |
+| `prompt-pulse context` | Capture and display terminal context |
+| `prompt-pulse context --backend tmux` | Capture context using a specific backend |
 
 ---
 
 ## 7. Configuration
 
-File: `~/.prompt-enhancer/config.yaml`
+File: `~/.prompt-pulse/config.yaml`
 
 ```yaml
 # Terminal
@@ -315,7 +315,7 @@ error_patterns:
 |-------|-----------|-----------|
 | Language | **Python 3.11+** | Rich ML/audio ecosystem; iTerm2 API is Python-native |
 | Terminal (tmux) | `subprocess` (tmux CLI) | `tmux capture-pane`, `tmux display-message` — works on any terminal inside tmux |
-| Terminal (iterm2) | `iterm2` (pip, optional) | Official iTerm2 scripting library. Optional: `pip install prompt-enhancer-service[iterm2]` |
+| Terminal (iterm2) | `iterm2` (pip, optional) | Official iTerm2 scripting library. Optional: `pip install prompt-pulse[iterm2]` |
 | Terminal (shell_hook) | Shell rc files + JSON state | Lightweight precmd/preexec hooks for zsh/bash/fish |
 | Terminal (generic) | Shell history files + `/proc` / `lsof` | Fallback: reads `~/.zsh_history`, `~/.bash_history`, fish history |
 | Audio capture | `sounddevice` + `numpy` | Low-latency, cross-platform audio |
@@ -335,14 +335,14 @@ error_patterns:
 ## 9. Directory Structure
 
 ```
-prompt-enhancer-service/
+prompt-pulse/
 ├── SPEC.md                          # This file
 ├── ARCHITECTURE.md                  # System architecture
 ├── AGENTS.md                        # Build/run instructions
 ├── pyproject.toml                   # Project metadata & dependencies
 ├── config.example.yaml              # Example configuration
 ├── src/
-│   └── prompt_enhancer/
+│   └── prompt_pulse/
 │       ├── __init__.py
 │       ├── main.py                  # Entry point, CLI
 │       ├── config.py                # Configuration loader
@@ -378,7 +378,7 @@ prompt-enhancer-service/
     ├── test_terminal_backends.py    # Tests for tmux, iterm2, shell_hook, generic
     ├── test_context_builder.py
     ├── test_voice_capture.py
-    ├── test_prompt_enhancer.py
+    ├── test_prompt_pulse.py
     └── test_error_patterns.py
 ```
 
@@ -391,7 +391,7 @@ prompt-enhancer-service/
 | Terminal output may contain secrets | Screen buffer is held in memory only, never persisted. Configurable redaction patterns for API keys, tokens. |
 | Voice data privacy | All transcription local by default (Whisper.cpp). Cloud APIs opt-in only. |
 | LLM data leakage | Local Ollama by default. Cloud LLMs opt-in. Warning shown when cloud is selected. |
-| API keys in config | Support env var references (`${VAR}`) in config. `.prompt-enhancer/` added to `.gitignore`. |
+| API keys in config | Support env var references (`${VAR}`) in config. `.prompt-pulse/` added to `.gitignore`. |
 | Microphone access | macOS will prompt for permission. Linux uses PulseAudio/PipeWire permissions. Service cannot bypass. |
 
 ---

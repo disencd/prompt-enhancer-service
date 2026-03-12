@@ -12,7 +12,7 @@ venv/
 env/
 
 # Config with secrets
-.prompt-enhancer/
+.prompt-pulse/
 
 # IDE
 .idea/

@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from prompt_enhancer.terminal.monitor import (
+from prompt_pulse.terminal.monitor import (
     CommandRecord,
     GenericBackend,
     ShellHookBackend,
@@ -69,7 +69,7 @@ def test_read_shell_history_bash_format():
         path = Path(f.name)
     try:
         # Mock Path.home() / ".bash_history" to point to our temp file
-        with patch("prompt_enhancer.terminal.monitor.Path") as mock_path:
+        with patch("prompt_pulse.terminal.monitor.Path") as mock_path:
             mock_path.home.return_value = path.parent
             mock_path.return_value.name = "bash"
             # Reconstruct the path correctly
@@ -127,7 +127,7 @@ def test_shell_hook_reads_state_file():
         }
         state_file.write_text(json.dumps(state_data))
 
-        with patch("prompt_enhancer.terminal.monitor.STATE_DIR", Path(tmpdir)):
+        with patch("prompt_pulse.terminal.monitor.STATE_DIR", Path(tmpdir)):
             backend = ShellHookBackend(shell_pid=12345)
             assert backend.is_available() is True
 
@@ -182,7 +182,7 @@ async def test_shell_hook_snapshot_with_state():
         }
         state_file.write_text(json.dumps(state_data))
 
-        with patch("prompt_enhancer.terminal.monitor.STATE_DIR", Path(tmpdir)):
+        with patch("prompt_pulse.terminal.monitor.STATE_DIR", Path(tmpdir)):
             backend = ShellHookBackend(shell_pid=99999)
             state = await backend.snapshot()
             assert state.cwd == "/tmp"
@@ -195,7 +195,7 @@ async def test_shell_hook_snapshot_with_state():
 @pytest.mark.asyncio
 async def test_shell_hook_snapshot_no_state_file():
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("prompt_enhancer.terminal.monitor.STATE_DIR", Path(tmpdir)):
+        with patch("prompt_pulse.terminal.monitor.STATE_DIR", Path(tmpdir)):
             backend = ShellHookBackend(shell_pid=88888)
             state = await backend.snapshot()
             assert state.backend == "shell_hook"

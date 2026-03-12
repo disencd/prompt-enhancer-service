@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug in prompt-enhancer-service
+about: Report a bug in prompt-pulse
 title: "[BUG] "
 labels: bug
 assignees: ""
@@ -11,7 +11,7 @@ A clear and concise description of the bug.
 
 **To Reproduce**
 Steps to reproduce:
-1. Run `prompt-enhancer ...`
+1. Run `prompt-pulse ...`
 2. ...
 3. See error
 

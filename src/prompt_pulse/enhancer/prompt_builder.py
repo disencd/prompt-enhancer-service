@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from prompt_enhancer.terminal.context import ContextPayload
+from prompt_pulse.terminal.context import ContextPayload
 
 META_PROMPT_TEMPLATE = """\
 You are a prompt engineer specializing in developer productivity. Given a user's raw \

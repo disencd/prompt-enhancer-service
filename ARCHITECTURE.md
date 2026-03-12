@@ -1,4 +1,4 @@
-# Architecture — Prompt Enhancer Service
+# Architecture — PromptPulse
 
 ## System Overview
 
@@ -7,7 +7,7 @@
 │                      macOS / Linux Host                              │
 │                                                                      │
 │  ┌─────────────┐    ┌──────────────────────────────────────────┐    │
-│  │  Terminal    │◄──►│      prompt-enhancer-service (daemon)    │    │
+│  │  Terminal    │◄──►│      prompt-pulse (daemon)    │    │
 │  │  (Any:      │    │                                          │    │
 │  │   tmux,     │    │  ┌────────────┐    ┌─────────────────┐   │    │
 │  │   iTerm2,   │    │  │  Terminal   │    │  Voice Capture  │   │    │
@@ -32,7 +32,7 @@
 │                      │                 │                         │    │
 │                      │                 ▼                         │    │
 │                      │  ┌─────────────────────────────────┐     │    │
-│                      │  │       Prompt Enhancer            │     │    │
+│                      │  │       PromptPulse            │     │    │
 │                      │  │  (LLM: Ollama / OpenAI / Claude) │     │    │
 │                      │  └──────────────┬──────────────────┘     │    │
 │                      │                 │                         │    │
@@ -112,7 +112,7 @@
 **Backend-specific notes**:
 - **tmux**: Checks `$TMUX` env var. Uses `tmux capture-pane -p` for screen buffer, `tmux display-message -p '#{pane_current_path}'` for CWD.
 - **iterm2**: Requires `iterm2` pip package (optional extra). Connects via `iterm2.Connection`. Only works on macOS with iTerm2 running + Python API enabled.
-- **shell_hook**: Reads `~/.prompt-enhancer/shell_state.json` written by shell hooks. No screen buffer, but provides CWD, last command, and exit code.
+- **shell_hook**: Reads `~/.prompt-pulse/shell_state.json` written by shell hooks. No screen buffer, but provides CWD, last command, and exit code.
 - **generic**: Always available. Reads shell history files and infers CWD via `/proc/PID/cwd` (Linux) or `lsof -p PID` (macOS).
 
 ---
@@ -175,11 +175,11 @@
 
 ---
 
-### 4. Prompt Enhancer
+### 4. PromptPulse
 
 ```
 ┌─────────────────────────────────────────────┐
-│            Prompt Enhancer                    │
+│            PromptPulse                    │
 │                                              │
 │  Input: ContextPayload                       │
 │                                              │
@@ -277,7 +277,7 @@ User          Hotkey       VoiceCapture    BackendDetector  TerminalBackend  Con
 | Backend Detection | No backend available | Fall through to generic (always available). Log warning. |
 | tmux Backend | Not inside tmux session | `is_available()` returns False; detector moves to next backend. |
 | iterm2 Backend | iTerm2 not running / API disabled / `iterm2` not installed | `is_available()` returns False; detector moves to next backend. |
-| shell_hook Backend | Hook not installed / state file missing | `is_available()` returns False; detector falls to generic. User prompted to run `prompt-enhancer install-hook`. |
+| shell_hook Backend | Hook not installed / state file missing | `is_available()` returns False; detector falls to generic. User prompted to run `prompt-pulse install-hook`. |
 | generic Backend | No shell history found | Return empty history. CWD detection via `/proc` (Linux) or `lsof` (macOS). |
 | Voice Capture | No microphone permission | Show OS permission prompt. Log error. |
 | Voice Capture | No speech detected (timeout) | Cancel gracefully. Show "No speech detected" notification. |

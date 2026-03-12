@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from prompt_enhancer.config import LLMConfig
-from prompt_enhancer.enhancer.llm_client import (
+from prompt_pulse.config import LLMConfig
+from prompt_pulse.enhancer.llm_client import (
     EnhanceResult,
     LLMClient,
     _is_transient,

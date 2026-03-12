@@ -108,7 +108,7 @@ jobs:
     needs: [build]
     environment:
       name: pypi
-      url: https://pypi.org/project/prompt-enhancer-service/
+      url: https://pypi.org/project/prompt-pulse/
     permissions:
       id-token: write
     steps:
@@ -164,7 +164,7 @@ jobs:
           echo "## Installation" >> changelog.md
           echo "" >> changelog.md
           echo '```bash' >> changelog.md
-          echo "pip install prompt-enhancer-service==${{ needs.validate.outputs.version || github.ref_name }}" >> changelog.md
+          echo "pip install prompt-pulse==${{ needs.validate.outputs.version || github.ref_name }}" >> changelog.md
           echo '```' >> changelog.md
 
       - name: Create GitHub Release

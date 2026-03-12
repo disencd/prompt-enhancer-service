@@ -11,10 +11,10 @@ from rich.console import Console
 from rich.logging import RichHandler
 from rich.panel import Panel
 
-from prompt_enhancer.config import AppConfig, init_config_dir, load_config
+from prompt_pulse.config import AppConfig, init_config_dir, load_config
 
 app = typer.Typer(
-    name="prompt-enhancer",
+    name="prompt-pulse",
     help="Voice-activated terminal-aware prompt enhancer for AI coding assistants.",
     no_args_is_help=True,
 )
@@ -38,22 +38,22 @@ async def run_pipeline(
     4. Enhance prompt via LLM
     5. Deliver result
     """
-    from prompt_enhancer.delivery.clipboard import deliver_to_clipboard, read_from_clipboard
-    from prompt_enhancer.delivery.notification import (
+    from prompt_pulse.delivery.clipboard import deliver_to_clipboard, read_from_clipboard
+    from prompt_pulse.delivery.notification import (
         notify_enhanced_prompt,
         notify_error,
         notify_fallback,
         notify_listening,
     )
-    from prompt_enhancer.enhancer.llm_client import enhance_prompt
-    from prompt_enhancer.enhancer.prompt_builder import (
+    from prompt_pulse.enhancer.llm_client import enhance_prompt
+    from prompt_pulse.enhancer.prompt_builder import (
         build_fallback_prompt,
         build_meta_prompt,
     )
-    from prompt_enhancer.terminal.context import ContextBuilder
-    from prompt_enhancer.terminal.monitor import TerminalState, create_backend
-    from prompt_enhancer.voice.capture import VoiceCapture
-    from prompt_enhancer.voice.transcribe import create_engine
+    from prompt_pulse.terminal.context import ContextBuilder
+    from prompt_pulse.terminal.monitor import TerminalState, create_backend
+    from prompt_pulse.voice.capture import VoiceCapture
+    from prompt_pulse.voice.transcribe import create_engine
 
     logger = logging.getLogger(__name__)
 
@@ -146,7 +146,7 @@ async def run_hotkey_daemon(config: AppConfig) -> None:
     from pynput import keyboard
 
     logger = logging.getLogger(__name__)
-    console.print("[bold green]Prompt Enhancer Service started[/]")
+    console.print("[bold green]PromptPulse started[/]")
     console.print(f"  Backend:      {config.terminal.backend}")
     console.print(f"  Activate:     {config.hotkeys.activate}")
     console.print(f"  Context only: {config.hotkeys.context_only}")
@@ -234,7 +234,7 @@ def start(
     config_file: Path | None = typer.Option(None, "--config", "-c", help="Path to config.yaml"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable debug logging"),
 ):
-    """Start the prompt enhancer daemon with global hotkeys."""
+    """Start the PromptPulse daemon with global hotkeys."""
     _setup_logging(verbose)
     config = load_config(config_file)
     try:
@@ -258,14 +258,14 @@ def enhance(
     if text:
         # Direct text enhancement
         async def _run():
-            from prompt_enhancer.delivery.clipboard import deliver_to_clipboard
-            from prompt_enhancer.enhancer.llm_client import enhance_prompt as do_enhance
-            from prompt_enhancer.enhancer.prompt_builder import (
+            from prompt_pulse.delivery.clipboard import deliver_to_clipboard
+            from prompt_pulse.enhancer.llm_client import enhance_prompt as do_enhance
+            from prompt_pulse.enhancer.prompt_builder import (
                 build_fallback_prompt,
                 build_meta_prompt,
             )
-            from prompt_enhancer.terminal.context import ContextBuilder
-            from prompt_enhancer.terminal.monitor import TerminalState, create_backend
+            from prompt_pulse.terminal.context import ContextBuilder
+            from prompt_pulse.terminal.monitor import TerminalState, create_backend
 
             # Try to get terminal context even in text mode
             terminal_state = TerminalState()
@@ -317,8 +317,8 @@ def context(
     _setup_logging(verbose)
 
     async def _run():
-        from prompt_enhancer.terminal.context import ContextBuilder
-        from prompt_enhancer.terminal.monitor import create_backend
+        from prompt_pulse.terminal.context import ContextBuilder
+        from prompt_pulse.terminal.monitor import create_backend
 
         try:
             be = create_backend(backend_type=backend, screen_buffer_lines=lines)
@@ -374,7 +374,7 @@ def install_hook(
     This adds a lightweight precmd/preexec hook to your shell that writes
     CWD, last command, and exit code to a state file. Works with any terminal.
     """
-    from prompt_enhancer.terminal.monitor import ShellHookBackend
+    from prompt_pulse.terminal.monitor import ShellHookBackend
 
     hook_file = ShellHookBackend.install_hook(shell)
     console.print(f"[green]Shell hook installed:[/] {hook_file}")
@@ -384,13 +384,13 @@ def install_hook(
 
 @app.command()
 def init():
-    """Initialize configuration directory (~/.prompt-enhancer/)."""
+    """Initialize configuration directory (~/.prompt-pulse/)."""
     config_dir = init_config_dir()
     console.print(f"[green]Config directory initialized:[/] {config_dir}")
     console.print(f"[dim]Edit config at:[/] {config_dir / 'config.yaml'}")
     console.print()
     console.print("[dim]Recommended next step — install the shell hook:[/]")
-    console.print("  prompt-enhancer install-hook")
+    console.print("  prompt-pulse install-hook")
 
 
 # ---------------------------------------------------------------------------

@@ -84,7 +84,7 @@ def _notify_linux(title: str, message: str, subtitle: str | None) -> bool:
         subprocess.run(
             [
                 "notify-send",
-                "--app-name=Prompt Enhancer",
+                "--app-name=PromptPulse",
                 "--expire-time=5000",
                 title,
                 body,
@@ -119,7 +119,7 @@ async def notify_enhanced_prompt(enhanced_prompt: str, preview_chars: int = 100)
 async def notify_error(error_message: str) -> bool:
     """Show an error notification."""
     return await show_notification(
-        title="Prompt Enhancer",
+        title="PromptPulse",
         subtitle="Error",
         message=error_message,
         sound=True,
@@ -129,7 +129,7 @@ async def notify_error(error_message: str) -> bool:
 async def notify_fallback(error_message: str) -> bool:
     """Notify the user that the LLM failed and a fallback was used."""
     return await show_notification(
-        title="Prompt Enhancer",
+        title="PromptPulse",
         subtitle="LLM unavailable — used template fallback",
         message=error_message,
         sound=True,
@@ -139,7 +139,7 @@ async def notify_fallback(error_message: str) -> bool:
 async def notify_listening() -> bool:
     """Show a notification that the service is listening."""
     return await show_notification(
-        title="Prompt Enhancer",
+        title="PromptPulse",
         message="Listening... speak now",
         sound=False,
     )

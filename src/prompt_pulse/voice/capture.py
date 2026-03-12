@@ -181,7 +181,7 @@ class VoiceCapture:
     def save_debug_wav(self, wav_bytes: bytes, path: str | None = None) -> Path:
         """Save WAV bytes to a file for debugging."""
         if path is None:
-            fd, path = tempfile.mkstemp(suffix=".wav", prefix="prompt_enhancer_")
+            fd, path = tempfile.mkstemp(suffix=".wav", prefix="prompt_pulse_")
         p = Path(path)
         p.write_bytes(wav_bytes)
         logger.debug("Saved debug audio to %s", p)

@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 BackendType = Literal["auto", "shell_hook", "tmux", "iterm2", "generic"]
 
 # Shared state file location for the shell hook
-STATE_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "prompt-enhancer"
+STATE_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "prompt-pulse"
 STATE_FILE_PATTERN = "state-{pid}.json"
 
 # ---------------------------------------------------------------------------
@@ -175,67 +175,67 @@ def _read_shell_history(shell: str = "", max_commands: int = 10) -> list[Command
 # ---------------------------------------------------------------------------
 
 SHELL_HOOK_ZSH = r"""
-# prompt-enhancer shell hook (zsh)
-__prompt_enhancer_state_dir="${XDG_RUNTIME_DIR:-/tmp}/prompt-enhancer"
-mkdir -p "$__prompt_enhancer_state_dir"
-__prompt_enhancer_state_file="$__prompt_enhancer_state_dir/state-$$.json"
+# prompt-pulse shell hook (zsh)
+__prompt_pulse_state_dir="${XDG_RUNTIME_DIR:-/tmp}/prompt-pulse"
+mkdir -p "$__prompt_pulse_state_dir"
+__prompt_pulse_state_file="$__prompt_pulse_state_dir/state-$$.json"
 
-__prompt_enhancer_preexec() {
-    __prompt_enhancer_cmd="$1"
-    __prompt_enhancer_cmd_start=$(date +%s)
+__prompt_pulse_preexec() {
+    __prompt_pulse_cmd="$1"
+    __prompt_pulse_cmd_start=$(date +%s)
 }
 
-__prompt_enhancer_precmd() {
+__prompt_pulse_precmd() {
     local exit_code=$?
     printf '{"pid":%d,"cwd":"%s","shell":"%s","last_command":"%s","exit_code":%d,"timestamp":%d,"hostname":"%s","username":"%s"}\n' \
         "$$" "$PWD" "$SHELL" \
-        "$(echo "$__prompt_enhancer_cmd" | sed 's/"/\\"/g')" \
+        "$(echo "$__prompt_pulse_cmd" | sed 's/"/\\"/g')" \
         "$exit_code" "$(date +%s)" "$(hostname -s)" "$USER" \
-        > "$__prompt_enhancer_state_file"
-    unset __prompt_enhancer_cmd
+        > "$__prompt_pulse_state_file"
+    unset __prompt_pulse_cmd
 }
 
 autoload -Uz add-zsh-hook
-add-zsh-hook preexec __prompt_enhancer_preexec
-add-zsh-hook precmd __prompt_enhancer_precmd
+add-zsh-hook preexec __prompt_pulse_preexec
+add-zsh-hook precmd __prompt_pulse_precmd
 """
 
 SHELL_HOOK_BASH = r"""
-# prompt-enhancer shell hook (bash)
-__prompt_enhancer_state_dir="${XDG_RUNTIME_DIR:-/tmp}/prompt-enhancer"
-mkdir -p "$__prompt_enhancer_state_dir"
-__prompt_enhancer_state_file="$__prompt_enhancer_state_dir/state-$$.json"
+# prompt-pulse shell hook (bash)
+__prompt_pulse_state_dir="${XDG_RUNTIME_DIR:-/tmp}/prompt-pulse"
+mkdir -p "$__prompt_pulse_state_dir"
+__prompt_pulse_state_file="$__prompt_pulse_state_dir/state-$$.json"
 
-__prompt_enhancer_trap_debug() {
-    __prompt_enhancer_cmd="$BASH_COMMAND"
+__prompt_pulse_trap_debug() {
+    __prompt_pulse_cmd="$BASH_COMMAND"
 }
-trap '__prompt_enhancer_trap_debug' DEBUG
+trap '__prompt_pulse_trap_debug' DEBUG
 
-__prompt_enhancer_prompt_command() {
+__prompt_pulse_prompt_command() {
     local exit_code=$?
     printf '{"pid":%d,"cwd":"%s","shell":"%s","last_command":"%s","exit_code":%d,"timestamp":%d,"hostname":"%s","username":"%s"}\n' \
         "$$" "$PWD" "$SHELL" \
-        "$(echo "$__prompt_enhancer_cmd" | sed 's/"/\\"/g')" \
+        "$(echo "$__prompt_pulse_cmd" | sed 's/"/\\"/g')" \
         "$exit_code" "$(date +%s)" "$(hostname -s)" "$USER" \
-        > "$__prompt_enhancer_state_file"
+        > "$__prompt_pulse_state_file"
 }
 
-PROMPT_COMMAND="__prompt_enhancer_prompt_command${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+PROMPT_COMMAND="__prompt_pulse_prompt_command${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 """
 
 SHELL_HOOK_FISH = r"""
-# prompt-enhancer shell hook (fish)
-set -g __prompt_enhancer_state_dir (test -n "$XDG_RUNTIME_DIR"; and echo "$XDG_RUNTIME_DIR"; or echo "/tmp")"/prompt-enhancer"
-mkdir -p $__prompt_enhancer_state_dir
-set -g __prompt_enhancer_state_file "$__prompt_enhancer_state_dir/state-%self.json"
+# prompt-pulse shell hook (fish)
+set -g __prompt_pulse_state_dir (test -n "$XDG_RUNTIME_DIR"; and echo "$XDG_RUNTIME_DIR"; or echo "/tmp")"/prompt-pulse"
+mkdir -p $__prompt_pulse_state_dir
+set -g __prompt_pulse_state_file "$__prompt_pulse_state_dir/state-%self.json"
 
-function __prompt_enhancer_postexec --on-event fish_postexec
+function __prompt_pulse_postexec --on-event fish_postexec
     set -l exit_code $status
     printf '{"pid":%d,"cwd":"%s","shell":"fish","last_command":"%s","exit_code":%d,"timestamp":%d,"hostname":"%s","username":"%s"}\n' \
         %self "$PWD" \
         (string replace -a '"' '\\"' -- "$argv") \
         $exit_code (date +%s) (hostname -s) "$USER" \
-        > $__prompt_enhancer_state_file
+        > $__prompt_pulse_state_file
 end
 """
 
@@ -340,10 +340,10 @@ class ShellHookBackend(TerminalBackend):
         if "fish" in shell_name:
             hook_dir = Path.home() / ".config" / "fish" / "conf.d"
             hook_dir.mkdir(parents=True, exist_ok=True)
-            hook_file = hook_dir / "prompt_enhancer.fish"
+            hook_file = hook_dir / "prompt_pulse.fish"
             hook_file.write_text(SHELL_HOOK_FISH)
         elif "bash" in shell_name:
-            hook_file = Path.home() / ".prompt-enhancer" / "hook.bash"
+            hook_file = Path.home() / ".prompt-pulse" / "hook.bash"
             hook_file.parent.mkdir(parents=True, exist_ok=True)
             hook_file.write_text(SHELL_HOOK_BASH)
             # Add source line to .bashrc if not present
@@ -354,7 +354,7 @@ class ShellHookBackend(TerminalBackend):
                     f.write(f"\n{source_line}\n")
         else:
             # zsh
-            hook_file = Path.home() / ".prompt-enhancer" / "hook.zsh"
+            hook_file = Path.home() / ".prompt-pulse" / "hook.zsh"
             hook_file.parent.mkdir(parents=True, exist_ok=True)
             hook_file.write_text(SHELL_HOOK_ZSH)
             # Add source line to .zshrc if not present

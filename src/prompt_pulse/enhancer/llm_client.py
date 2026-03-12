@@ -6,7 +6,7 @@ import asyncio
 import logging
 from dataclasses import dataclass
 
-from prompt_enhancer.config import LLMConfig
+from prompt_pulse.config import LLMConfig
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,10 @@
 """Tests for the prompt builder templates."""
 
-from prompt_enhancer.enhancer.prompt_builder import (
+from prompt_pulse.enhancer.prompt_builder import (
     build_fallback_prompt,
     build_meta_prompt,
 )
-from prompt_enhancer.terminal.context import ContextPayload
+from prompt_pulse.terminal.context import ContextPayload
 
 
 def _make_summary(**overrides):

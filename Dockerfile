@@ -1,6 +1,6 @@
 FROM python:3.14-slim AS base
 
-LABEL org.opencontainers.image.source="https://github.com/disencd/prompt-enhancer-service"
+LABEL org.opencontainers.image.source="https://github.com/disencd/prompt-pulse"
 LABEL org.opencontainers.image.description="Voice-activated terminal-aware prompt enhancer"
 LABEL org.opencontainers.image.licenses="MIT"
 
@@ -45,5 +45,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 RUN useradd --create-home --shell /bin/bash appuser
 USER appuser
 
-ENTRYPOINT ["prompt-enhancer"]
+ENTRYPOINT ["prompt-pulse"]
 CMD ["--help"]
