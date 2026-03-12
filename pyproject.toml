@@ -48,6 +48,14 @@ line-length = 100
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# Shell hook scripts embedded as string literals contain long lines
+"src/prompt_enhancer/terminal/monitor.py" = ["E501"]
+# Regex patterns are long by nature
+"src/prompt_enhancer/terminal/error_patterns.py" = ["E501"]
+# Test strings contain long error messages
+"tests/test_error_patterns.py" = ["E501"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

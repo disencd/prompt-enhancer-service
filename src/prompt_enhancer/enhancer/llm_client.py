@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Literal
 
 from prompt_enhancer.config import LLMConfig
 
@@ -49,7 +48,10 @@ class LLMClient:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a prompt enhancement engine. Output only the enhanced prompt.",
+                        "content": (
+                            "You are a prompt enhancement engine. "
+                            "Output only the enhanced prompt."
+                        ),
                     },
                     {"role": "user", "content": prompt},
                 ],
@@ -77,7 +79,10 @@ class LLMClient:
                     )
                     return resp.status_code == 200
             # For cloud providers, assume available if API key is set
-            return bool(self._config.resolve_api_key()) or self._config.provider == "ollama"
+            return (
+                bool(self._config.resolve_api_key())
+                or self._config.provider == "ollama"
+            )
         except Exception:
             return False
 

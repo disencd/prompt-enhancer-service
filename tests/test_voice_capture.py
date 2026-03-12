@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from prompt_enhancer.voice.capture import VoiceCapture, CaptureState, SAMPLE_RATE
+from prompt_enhancer.voice.capture import SAMPLE_RATE, CaptureState, VoiceCapture
 
 
 def test_initial_state():

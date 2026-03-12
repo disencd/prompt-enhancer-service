@@ -56,7 +56,11 @@ def build_meta_prompt(context: ContextPayload, summary: dict) -> str:
 
 def build_context_only_prompt(summary: dict) -> str:
     """Build a prompt when there's no voice input — enhance clipboard text."""
-    return META_PROMPT_TEMPLATE.format(**{**summary, "voice_transcript": summary.get("voice_transcript", "(from clipboard)")})
+    merged = {
+        **summary,
+        "voice_transcript": summary.get("voice_transcript", "(from clipboard)"),
+    }
+    return META_PROMPT_TEMPLATE.format(**merged)
 
 
 # Simplified fallback template for when LLM is unavailable

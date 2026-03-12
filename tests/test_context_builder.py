@@ -1,6 +1,6 @@
 """Tests for the context builder."""
 
-from prompt_enhancer.terminal.context import ContextBuilder, detect_project
+from prompt_enhancer.terminal.context import ContextBuilder
 from prompt_enhancer.terminal.monitor import CommandRecord, TerminalState
 
 

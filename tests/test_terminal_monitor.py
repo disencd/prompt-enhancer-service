@@ -2,7 +2,6 @@
 
 import json
 import os
-import platform
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -10,7 +9,6 @@ from unittest.mock import patch
 import pytest
 
 from prompt_enhancer.terminal.monitor import (
-    BackendType,
     CommandRecord,
     GenericBackend,
     ShellHookBackend,
@@ -19,7 +17,6 @@ from prompt_enhancer.terminal.monitor import (
     TmuxBackend,
     _read_shell_history,
     create_backend,
-    detect_backend,
 )
 
 

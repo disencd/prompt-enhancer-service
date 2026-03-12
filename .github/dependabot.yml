@@ -1,0 +1,56 @@
+version: 2
+updates:
+  # Python dependencies (pip / uv)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      # Group minor/patch updates together to reduce PR noise
+      dev-dependencies:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "pytest-*"
+        update-types:
+          - "minor"
+          - "patch"
+      core-dependencies:
+        patterns:
+          - "pydantic"
+          - "typer"
+          - "rich"
+          - "pyyaml"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "ci"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "docker"
+      - "automated"

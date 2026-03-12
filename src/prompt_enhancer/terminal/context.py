@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from prompt_enhancer.terminal.error_patterns import DetectedError, ErrorDetectionEngine
-from prompt_enhancer.terminal.monitor import CommandRecord, TerminalState
+from prompt_enhancer.terminal.monitor import TerminalState
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class ContextPayload:
     """Complete context payload sent to the prompt enhancer."""
 
     timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+        default_factory=lambda: datetime.now(UTC).isoformat()
     )
     voice_transcript: str = ""
     terminal: TerminalState = field(default_factory=TerminalState)

@@ -52,7 +52,10 @@ class WhisperLocalEngine(TranscriptionEngine):
             return
         try:
             from faster_whisper import WhisperModel
-            logger.info("Loading Whisper model '%s' (first load may download ~150MB)...", self._model_size)
+            logger.info(
+                "Loading Whisper model '%s' (first load may download ~150MB)...",
+                self._model_size,
+            )
             self._model = WhisperModel(
                 self._model_size,
                 device="cpu",
@@ -80,10 +83,15 @@ class WhisperLocalEngine(TranscriptionEngine):
                 vad_filter=True,
             )
             text = " ".join(seg.text for seg in segments).strip()
+            conf = (
+                1.0 - info.language_probability
+                if info.language != "en"
+                else info.language_probability
+            )
             return TranscriptionResult(
                 text=text,
                 language=info.language,
-                confidence=1.0 - info.language_probability if info.language != "en" else info.language_probability,
+                confidence=conf,
             )
         finally:
             Path(tmp_path).unlink(missing_ok=True)
@@ -135,8 +143,9 @@ class WhisperAPIEngine(TranscriptionEngine):
 
     def is_available(self) -> bool:
         try:
-            import httpx  # noqa: F401
             import os
+
+            import httpx  # noqa: F401
             return bool(self._api_key or os.environ.get("OPENAI_API_KEY"))
         except ImportError:
             return False
@@ -148,8 +157,8 @@ class AppleSpeechEngine(TranscriptionEngine):
     async def transcribe(self, wav_bytes: bytes) -> TranscriptionResult:
         """Transcribe using macOS Speech framework."""
         # This requires pyobjc-framework-Speech and runs synchronously
-        import Speech
         import Foundation
+        import Speech
 
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
             f.write(wav_bytes)
@@ -191,7 +200,9 @@ class AppleSpeechEngine(TranscriptionEngine):
 
 
 def create_engine(
-    engine_type: Literal["whisper_local", "whisper_api", "apple_speech"] = "whisper_local",
+    engine_type: Literal[
+        "whisper_local", "whisper_api", "apple_speech"
+    ] = "whisper_local",
     model_size: str = "base.en",
     api_key: str | None = None,
 ) -> TranscriptionEngine:

@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 import io
 import logging
-import struct
 import tempfile
 import wave
 from enum import Enum
@@ -124,7 +123,7 @@ class VoiceCapture:
 
                 try:
                     frame = await asyncio.wait_for(audio_queue.get(), timeout=0.1)
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     continue
 
                 flat = frame.flatten()

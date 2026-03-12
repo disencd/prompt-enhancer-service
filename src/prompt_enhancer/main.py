@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import sys
 from pathlib import Path
 
 import typer
@@ -253,7 +252,10 @@ def enhance(
         async def _run():
             from prompt_enhancer.delivery.clipboard import deliver_to_clipboard
             from prompt_enhancer.enhancer.llm_client import enhance_prompt as do_enhance
-            from prompt_enhancer.enhancer.prompt_builder import build_fallback_prompt, build_meta_prompt
+            from prompt_enhancer.enhancer.prompt_builder import (
+                build_fallback_prompt,
+                build_meta_prompt,
+            )
             from prompt_enhancer.terminal.context import ContextBuilder
             from prompt_enhancer.terminal.monitor import TerminalState, create_backend
 
@@ -318,7 +320,11 @@ def context(
         summary = builder.build_summary(ctx)
 
         console.print(Panel(
-            "\n".join(f"[cyan]{k}:[/] {v}" for k, v in summary.items() if k != "screen_buffer_last_50"),
+            "\n".join(
+                f"[cyan]{k}:[/] {v}"
+                for k, v in summary.items()
+                if k != "screen_buffer_last_50"
+            ),
             title=f"Terminal Context (backend: {be.name})",
             border_style="blue",
         ))
@@ -329,14 +335,21 @@ def context(
                 border_style="dim",
             ))
         if summary.get("detected_errors") != "none detected":
-            console.print(Panel(summary["detected_errors"], title="Detected Errors", border_style="red"))
+            console.print(Panel(
+                summary["detected_errors"],
+                title="Detected Errors",
+                border_style="red",
+            ))
 
     asyncio.run(_run())
 
 
 @app.command()
 def install_hook(
-    shell: str = typer.Option("", "--shell", help="Shell type (zsh/bash/fish). Auto-detects if empty."),
+    shell: str = typer.Option(
+        "", "--shell",
+        help="Shell type (zsh/bash/fish). Auto-detects if empty.",
+    ),
 ):
     """Install the shell hook for terminal state capture.
 
