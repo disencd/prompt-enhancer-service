@@ -16,7 +16,7 @@ dependencies = [
     "pyperclip>=1.8",
     "pydantic>=2.5",
     "pyyaml>=6.0",
-    "typer[all]>=0.9",
+    "typer[all]>=0.24.1",
     "rich>=13.0",
 ]
 
