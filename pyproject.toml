@@ -8,7 +8,7 @@ license = { text = "MIT" }
 
 dependencies = [
     "sounddevice>=0.4.6",
-    "numpy>=1.26",
+    "numpy>=2.4.4",
     "webrtcvad>=2.0.10",
     "whispercpp>=0.0.17",
     "litellm>=1.30",
